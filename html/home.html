@@ -10,11 +10,20 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/notie/4.3.1/notie.min.css"
         integrity="sha512-UrjLcAek5jbj1vwGbXkviPHtgSNVNQCedX7cBIMDdSI2iZtUcZcoTh2Sqc8R9mVcijOjFUi1IlxhfrE1uWaIog=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"
+        integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
     <title>Go WebSockets Chatroom</title>
     <style>
+        body {
+            background-color: #EEF2FF !important;
+            font-family: 'Lato', sans-serif !important;
+        }
+
         .chatbox {
-            outline: 1px solid silver;
-            min-height: 160px;
+            outline: 1px solid blue;
+            min-height: 500px;
             padding: 0.5em;
         }
     </style>
@@ -24,40 +33,46 @@
     <div class="container">
         <div class="row">
             <div class="col">
-                <h1 class='mt-3'>This is the home page</h1>
+                <div class="d-flex align-items-center justify-content-between">
+                    <h1 class='mt-3 text-primary'>Go Websockets Chatroom</h1>
+                    <button class='btn btn-primary'>Leave Room</button>
+                </div>
                 <hr>
             </div>
         </div>
         <div class="row">
             <div class="col-md-8">
-                <h3>Chat</h3>
+                <form class="form-group border rounded shadow bg-white font-weight-bold p-4">
+                    <div class="my-1" id="status">
+                        <input type="hidden" name="action" id="action">
+                    </div>
 
-                <div class="form-group">
-                    <label for="username">Username:</label>
-                    <input type="text" name="username" id="username" class="form-control" autocomplete="off">
-                </div>
-                <div class="form-group">
-                    <label for="message">Message:</label>
-                    <input type="text" name="message" id="message" class="form-control" autocomplete="off">
-                </div>
+                    <div>
+                        <input type="text" name="username" id="username" placeholder="Enter Username"
+                            class="form-control w-50 mt-4" autocomplete="off">
+                    </div>
 
-                <hr>
-                <a href="javascript:void(0);" class="btn btn-outline-secondary" id="sendBtn">Send Message</a>
+                    <hr>
 
-                <input type="hidden" name="action" id="action">
+                    <div class="d-flex align-items-center justify-content-between mt-3">
+                        <input type="text" name="message" id="message" placeholder="Enter Message"
+                            class="form-control flex-grow-1" autocomplete="off">
+                        <button href="javascript:void(0);" class="btn btn-primary" id="sendBtn">Send</button>
+                    </div>
 
-                <div class="mt-2 float-end" id="status">
+                    <div class="chatbox mt-3" id="output">
 
-                </div>
-
-                <div class="chatbox mt-3" id="output">
-
-                </div>
+                    </div>
+                </form>
             </div>
             <div class="col-md-4">
-                <h3>Who's Online</h3>
 
-                <ul id="online_users">
+                <form class="form-group border rounded shadow bg-white font-weight-bold p-4">  
+                    <h3><i class="fas fa-comments text-primary"></i>Room Name:</h3>
+                    <h3><i class="fas fa-users text-primary"></i>Who's Online:</h3>
+
+                    <ul id="online_users">
+                </form>
 
                 </ul>
             </div>
@@ -73,7 +88,7 @@
     <script src="/static/reconnecting-websocket.min.js"></script>
     <script>
         let socket = null;
-        let o = document.getElementById("output")
+        let output = document.getElementById("output")
         let userField = document.getElementById("username")
         let messageField = document.getElementById("message")
 
@@ -133,7 +148,7 @@
 
                     case "broadcast":
                         // append the new messasge html to whatever is in the chatbox already
-                        o.innerHTML = o.innerHTML + data.message + "<br>"
+                        output.innerHTML = output.innerHTML + data.message + "<br>"
                         break;
                 }
             }
