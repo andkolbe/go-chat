@@ -23,8 +23,16 @@ func Home(w http.ResponseWriter, r *http.Request) {
 }
 
 // Login Page
-func Login(w http.ResponseWriter, r *http.Request) {
-	err := renderPage(w, "login.html", nil)
+func Register(w http.ResponseWriter, r *http.Request) {
+	err := renderPage(w, "register.html", nil)
+	if err != nil {
+		log.Println(err)
+	}
+}
+
+// Chat Room Page
+func Chat(w http.ResponseWriter, r *http.Request) {
+	err := renderPage(w, "chat.html", nil)
 	if err != nil {
 		log.Println(err)
 	}

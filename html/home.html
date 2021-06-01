@@ -7,206 +7,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/notie/4.3.1/notie.min.css"
-        integrity="sha512-UrjLcAek5jbj1vwGbXkviPHtgSNVNQCedX7cBIMDdSI2iZtUcZcoTh2Sqc8R9mVcijOjFUi1IlxhfrE1uWaIog=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"
-        integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
-    <title>Go WebSockets Chatroom</title>
+    <title>Document</title>
     <style>
         body {
             background-color: #EEF2FF !important;
             font-family: 'Lato', sans-serif !important;
-        }
-
-        .chatbox {
-            outline: 1px solid blue;
-            min-height: 500px;
-            padding: 0.5em;
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <div class="row">
-            <div class="col">
-                <div class="d-flex align-items-center justify-content-between">
-                    <h1 class='mt-3 text-primary'>Go Websockets Chatroom</h1>
-                    <button class='btn btn-primary'>Leave Room</button>
-                </div>
-                <hr>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-8">
-                <form class="form-group border rounded shadow bg-white font-weight-bold p-4">
-                    <div class="my-1" id="status">
-                        <input type="hidden" name="action" id="action">
-                    </div>
+        <div class="row justify-content-center mt-5">
+            <div class="col-lg-7">
+                <form class='form-group border rounded shadow bg-primary font-weight-bold p-4'>
+                    <h2 class='mb-4 text-center text-light text-primary'>Go Websockets Chat Room</h2>
 
-                    <div>
-                        <input type="text" name="username" id="username" placeholder="Enter Username"
-                            class="form-control w-50 mt-4" autocomplete="off">
-                    </div>
+                    <h4 class='text-center text-light mb-3'>Log In</h4>
 
-                    <hr>
+                    <input class='form-control input-shadow ml-2 mb-4' placeholder='username' />
 
-                    <div class="d-flex align-items-center justify-content-between mt-3">
-                        <input type="text" name="message" id="message" placeholder="Enter Message"
-                            class="form-control flex-grow-1" autocomplete="off">
-                        <button href="javascript:void(0);" class="btn btn-primary" id="sendBtn">Send</button>
-                    </div>
+                    <input class='form-control input-shadow ml-2 mb-4' placeholder='password' />
+                    <h6 class="text-light">Choose a Room To Join</h6>
+                    <select class="form-select" name="room" id="room">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                    </select>
 
-                    <div class="chatbox mt-3" id="output">
+                    <button type='submit' class='btn btn-light btn-shadow mt-3'>Login</button>
 
+                    <div class='text-center mt-2'>
+                        <h6 class='mr-2 text-light'>Need to Create an Account?</h6>
+                        <h5>Register Here!</h5>
                     </div>
                 </form>
-            </div>
-            <div class="col-md-4">
-
-                <form class="form-group border rounded shadow bg-white font-weight-bold p-4">  
-                    <h3><i class="fas fa-comments text-primary"></i>Room Name:</h3>
-                    <h3><i class="fas fa-users text-primary"></i>Who's Online:</h3>
-
-                    <ul id="online_users">
-                </form>
-
-                </ul>
             </div>
         </div>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
         crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/notie/4.3.1/notie.min.js"
-        integrity="sha512-NHRCwRf2LnVSlLDejCA9oS3fG3/FLSQIPCjAWl3M7tVi5wszwr6FxkjotWnQDXLE+aLKcxRrzFDNEgXj9nvkPw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="/static/reconnecting-websocket.min.js"></script>
-    <script>
-        let socket = null;
-        let output = document.getElementById("output")
-        let userField = document.getElementById("username")
-        let messageField = document.getElementById("message")
-
-        window.onbeforeunload = function () {
-            console.log("Leaving")
-            let jsonData = {}
-            jsonData["action"] = "left"
-            socket.send(JSON.stringify(jsonData))
-        }
-
-        // wait until the document is loaded and then connect to the websocket
-        document.addEventListener("DOMContentLoaded", function () {
-            socket = new ReconnectingWebSocket("ws://127.0.0.1:8080/ws", null, {
-                debug: true,
-                reconnectInterval: 3000
-            })
-
-            const offline = `<span class="badge bg-danger">Not Connected</span>`
-            const online = `<span class="badge bg-success">Connected</span>`
-            let statusDiv = document.getElementById("status")
-
-            socket.onopen = () => {
-                console.log("Successfully connected")
-                statusDiv.innerHTML = online
-            }
-
-            socket.onclose = () => {
-                console.log("connection closed")
-                statusDiv.innerHTML = offline
-            }
-
-            socket.onerror = error => {
-                console.log("there was an error")
-            }
-
-            socket.onmessage = msg => {
-
-                // handle the response we get back from the user
-                let data = JSON.parse(msg.data)
-                console.log("Action is", data.action)
-
-                switch (data.action) {
-                    case "list_users":
-                        let ul = document.getElementById("online_users")
-                        // empty out the list so we can repopulate it with new information
-                        while (ul.firstChild) ul.removeChild(ul.firstChild)
-
-                        // if we have any users, loop through them, create an li, populate the li with the user data, and append the li to the ul
-                        if (data.connected_users.length > 0) {
-                            data.connected_users.forEach(function (item) {
-                                let li = document.createElement("li")
-                                li.appendChild(document.createTextNode(item))
-                                ul.appendChild(li)
-                            })
-                        }
-                        break;
-
-                    case "broadcast":
-                        // append the new messasge html to whatever is in the chatbox already
-                        output.innerHTML = output.innerHTML + data.message + "<br>"
-                        break;
-                }
-            }
-
-            userField.addEventListener("change", function () {
-                // construct an empty JSON object and populate it with information
-                let jsonData = {}
-                jsonData["action"] = "username"
-                jsonData["username"] = this.value
-                socket.send(JSON.stringify(jsonData))
-            })
-
-            // if you press the enter key to send the message
-            messageField.addEventListener("keydown", function (event) {
-                if (event.code === "Enter") { // if they hit the enter key
-                    if (!socket) { // if they are not connected to the socket
-                        console.log("no connection")
-                        return false
-                    }
-                    if ((userField.value === "") || (messageField.value === "")) {
-                        errorMessage("Fill out username and message!")
-                        return false
-                    } else {
-                        sendMessage()
-                    }
-                    event.preventDefault();
-                    event.stopPropagation();
-                }
-            })
-
-            // if you press the button on the screen to send the message
-            document.getElementById("sendBtn").addEventListener("click", function () {
-                if ((userField.value === "") || (messageField.value === "")) {
-                    errorMessage("Fill out username and message!")
-                    return false
-                } else {
-                    sendMessage()
-                }
-            })
-
-        })
-
-        function sendMessage() {
-            let jsonData = {}
-            jsonData["action"] = "broadcast"
-            jsonData["username"] = userField.value
-            jsonData["message"] = messageField.value
-            socket.send(JSON.stringify(jsonData))
-            messageField.value = "" // empties the message field after it has been sent
-        }
-
-        function errorMessage(msg) {
-            notie.alert({
-                type: 'error',
-                text: msg,
-            })
-        }
-    </script>
 </body>
 
 </html>
