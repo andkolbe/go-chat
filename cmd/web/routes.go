@@ -5,10 +5,15 @@ import (
 
 	"github.com/andkolbe/go-chat/internal/handlers"
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 )
 
 func routes() http.Handler {
 	mux := chi.NewRouter()
+
+	// middleware allows you process a request as it comes into your web app and perform some action on it
+	mux.Use(middleware.Recoverer)
+	mux.Use(NoSurf)
 
 	mux.Get("/", http.HandlerFunc(handlers.Home))
 	mux.Get("/register", http.HandlerFunc(handlers.Register))
