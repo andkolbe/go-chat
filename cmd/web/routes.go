@@ -16,9 +16,9 @@ func routes() http.Handler {
 	mux.Use(NoSurf)
 	mux.Use(SessionLoad)
 
-	mux.Get("/", http.HandlerFunc(handlers.Home))
-	mux.Get("/register", http.HandlerFunc(handlers.Register))
-	mux.Get("/chat", http.HandlerFunc(handlers.Chat))
+	mux.Get("/", http.HandlerFunc(handlers.Repo.Home))
+	mux.Get("/register", http.HandlerFunc(handlers.Repo.Register))
+	mux.Get("/chat", http.HandlerFunc(handlers.Repo.Chat))
 	mux.Get("/ws", http.HandlerFunc(handlers.WsEndPoint))
 
 	// if a user is disconnected, and then reconnects, they rejoin automatically
