@@ -29,6 +29,8 @@ func main() {
 	session.Cookie.SameSite = http.SameSiteLaxMode
 	session.Cookie.Secure = app.InProduction // makes sure the cookies are encrypted and use https. Change to true for production
 
+	app.Session = session
+
 	mux := routes()
 
 	log.Println("Starting channel listener")
