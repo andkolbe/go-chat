@@ -4,6 +4,7 @@ package main
 // A main function executes by default when you run the main package
 
 import (
+	"encoding/gob"
 	"log"
 	"net/http"
 	"time"
@@ -12,6 +13,7 @@ import (
 	"github.com/andkolbe/go-chat/internal/config"
 	"github.com/andkolbe/go-chat/internal/driver"
 	"github.com/andkolbe/go-chat/internal/handlers"
+	"github.com/andkolbe/go-chat/internal/models"
 
 	_ "github.com/jackc/pgx/v4/stdlib"
 )
@@ -20,6 +22,9 @@ var app config.AppConfig
 var session *scs.SessionManager
 
 func main() {
+
+	// what I am going to put in the session 
+	gob.Register(models.User{})
 
 	// change this to true when in production
 	app.InProduction = false
