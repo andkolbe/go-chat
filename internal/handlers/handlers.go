@@ -9,8 +9,9 @@ import (
 
 // every web handler in go must have a response writer and a pointer to a request
 
+// must have this to use the jet templating engine
 var views = jet.NewSet(
-	jet.NewOSFileSystemLoader("./html"),
+	jet.NewOSFileSystemLoader("./html"), // look at the files in the html folder
 	jet.InDevelopmentMode(), // we don't have to restart our app every time we make a change to a jet template
 )
 
