@@ -16,7 +16,8 @@ func routes() http.Handler {
 	mux.Use(NoSurf)
 	mux.Use(SessionLoad)
 
-	mux.Get("/", http.HandlerFunc(handlers.Repo.Home))
+	mux.Get("/", http.HandlerFunc(handlers.Repo.Login))
+	mux.Post("/", http.HandlerFunc(handlers.Repo.PostLogin))
 	mux.Get("/register", http.HandlerFunc(handlers.Repo.Register))
 	mux.Get("/chat", http.HandlerFunc(handlers.Repo.Chat))
 	mux.Get("/ws", http.HandlerFunc(handlers.WsEndPoint))

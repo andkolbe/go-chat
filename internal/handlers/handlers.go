@@ -51,7 +51,7 @@ var views = jet.NewSet(
 // those handlers have access to everything inside of the app config and the database driver
 
 // Home Page
-func (m *Repository) Home(w http.ResponseWriter, r *http.Request) {
+func (m *Repository) Login(w http.ResponseWriter, r *http.Request) {
 	err := renderPage(w, "home.html", nil)
 	if err != nil {
 		log.Println(err)
