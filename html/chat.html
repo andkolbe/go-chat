@@ -25,6 +25,7 @@
             outline: 1px solid blue;
             min-height: 500px;
             padding: 0.5em;
+            background-color: #EEF2FF;
         }
     </style>
 </head>
@@ -42,14 +43,15 @@
         </div>
         <div class="row">
             <div class="col-md-8">
-                <form class="form-group border rounded shadow bg-white font-weight-bold p-4">
+                <form class="form-group border rounded shadow bg-primary font-weight-bold p-4">
                     <div class="my-1" id="status">
                         <input type="hidden" name="action" id="action">
                     </div>
 
+                    <h5 class="mt-4 text-light">Username Goes Here</h5>
+
                     <div>
-                        <input type="text" name="username" id="username" placeholder="Enter Username"
-                            class="form-control w-50 mt-4" autocomplete="off">
+                        <input type="text" name="username" id="username" placeholder="Enter Username" class="form-control" autocomplete="off">
                     </div>
 
                     <hr>
@@ -57,7 +59,7 @@
                     <div class="d-flex align-items-center justify-content-between mt-3">
                         <input type="text" name="message" id="message" placeholder="Enter Message"
                             class="form-control flex-grow-1" autocomplete="off">
-                        <button href="javascript:void(0);" class="btn btn-primary" id="sendBtn">Send</button>
+                        <button href="javascript:void(0);" class="btn btn-light" id="sendBtn">Send</button>
                     </div>
 
                     <div class="chatbox mt-3" id="output">
@@ -67,8 +69,8 @@
             </div>
             <div class="col-md-4">
 
-                <form class="form-group border rounded shadow bg-white font-weight-bold p-4">  
-                    <h3><i class="fas fa-comments text-primary"></i>Room Name:</h3>
+                <form class="form-group border rounded shadow bg-white font-weight-bold p-4">
+                    <!-- <h3><i class="fas fa-comments text-primary"></i>Room Name:</h3> -->
                     <h3><i class="fas fa-users text-primary"></i>Who's Online:</h3>
 
                     <ul id="online_users">

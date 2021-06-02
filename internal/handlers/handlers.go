@@ -22,7 +22,7 @@ func Home(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Login Page
+// Register Page
 func Register(w http.ResponseWriter, r *http.Request) {
 	err := renderPage(w, "register.html", nil)
 	if err != nil {

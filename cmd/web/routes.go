@@ -4,11 +4,11 @@ import (
 	"net/http"
 
 	"github.com/andkolbe/go-chat/internal/handlers"
-	"github.com/bmizerany/pat"
+	"github.com/go-chi/chi/v5"
 )
 
 func routes() http.Handler {
-	mux := pat.New()
+	mux := chi.NewRouter()
 
 	mux.Get("/", http.HandlerFunc(handlers.Home))
 	mux.Get("/register", http.HandlerFunc(handlers.Register))
@@ -17,7 +17,7 @@ func routes() http.Handler {
 
 	// if a user is disconnected, and then reconnects, they rejoin automatically
 	fileServer := http.FileServer(http.Dir("./static/"))
-	mux.Get("/static/", http.StripPrefix("/static", fileServer))
+	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
 	return mux
 }
