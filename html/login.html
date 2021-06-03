@@ -6,7 +6,8 @@
 {{block body()}}
 <div class="row justify-content-center mt-5">
     <div class="col-lg-7">
-        <form class='form-group border rounded shadow bg-primary font-weight-bold p-4'>
+        <form method="POST" action="/" class='form-group border rounded shadow bg-primary font-weight-bold p-4' >
+            <input type='hidden' name='csrf_token' value='{{.CSRFToken}}'>
             <h2 class='mb-4 text-center text-light text-primary'>Go Websockets Chat Room</h2>
 
             <h4 class='text-center text-light mb-3'>Log In</h4>

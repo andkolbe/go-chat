@@ -1,12 +1,14 @@
 package handlers
 
 import (
+	"fmt"
 	"log"
 	"net/http"
+	"runtime/debug"
 
-	"github.com/CloudyKit/jet/v6"
 	"github.com/andkolbe/go-chat/internal/config"
 	"github.com/andkolbe/go-chat/internal/driver"
+	"github.com/andkolbe/go-chat/internal/helpers"
 	"github.com/andkolbe/go-chat/internal/repository"
 	"github.com/andkolbe/go-chat/internal/repository/dbrepo"
 )
@@ -15,6 +17,8 @@ import (
 
 // the repository used by the handlers
 var Repo *Repository
+
+var app *config.AppConfig
 
 // the repository type
 type Repository struct {
@@ -35,24 +39,18 @@ func NewRepo(a *config.AppConfig, db *driver.DB) *Repository {
 // and hand that back as a pointer to Repository
 
 // sets the repository for the handlers on the main package
-func NewHandlers(r *Repository) {
-	Repo = r
+func NewHandlers(repo *Repository) {
+	Repo = repo
 }
 
 // every web handler in Go must have a response writer and a pointer to a request
-
-// must have this to use the jet templating engine
-var views = jet.NewSet(
-	jet.NewOSFileSystemLoader("./html"), // look at the files in the html folder
-	jet.InDevelopmentMode(), // we don't have to restart our app every time we make a change to a jet template
-)
 
 // giving the handlers a receiver links them together with the repository, so all of the handlers have access to the repository
 // those handlers have access to everything inside of the app config and the database driver
 
 // Home Page
 func (m *Repository) Login(w http.ResponseWriter, r *http.Request) {
-	err := renderPage(w, "home.html", nil)
+	err := helpers.RenderPage(w, r, "login.html", nil, nil)
 	if err != nil {
 		log.Println(err)
 	}
@@ -60,7 +58,7 @@ func (m *Repository) Login(w http.ResponseWriter, r *http.Request) {
 
 // Register Page
 func (m *Repository) Register(w http.ResponseWriter, r *http.Request) {
-	err := renderPage(w, "register.html", nil)
+	err := helpers.RenderPage(w, r, "register.html", nil, nil)
 	if err != nil {
 		log.Println(err)
 	}
@@ -68,25 +66,45 @@ func (m *Repository) Register(w http.ResponseWriter, r *http.Request) {
 
 // Chat Room Page
 func (m *Repository) Chat(w http.ResponseWriter, r *http.Request) {
-	err := renderPage(w, "chat.html", nil)
+	err := helpers.RenderPage(w, r, "chat.html", nil, nil)
 	if err != nil {
 		log.Println(err)
 	}
 }
 
-// renders pages
-func renderPage(w http.ResponseWriter, tmpl string, data jet.VarMap) error {
-	view, err := views.GetTemplate(tmpl)
-	if err != nil {
-		log.Println(err)
-		return err
+// ClientError will display error page for client error i.e. bad request
+func ClientError(w http.ResponseWriter, r *http.Request, status int) {
+	switch status {
+	case http.StatusNotFound:
+		show404(w, r)
+	case http.StatusInternalServerError:
+		show500(w, r)
+	default:
+		http.Error(w, http.StatusText(status), status)
 	}
+}
 
-	err = view.Execute(w, data, nil)
-	if err != nil {
-		log.Println(err)
-		return err
-	}
+// ServerError will display error page for internal server error
+func ServerError(w http.ResponseWriter, r *http.Request, err error) {
+	trace := fmt.Sprintf("%s\n%s", err.Error(), debug.Stack())
+	_ = log.Output(2, trace)
+	show500(w, r)
+}
 
-	return nil
+func show404(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotFound)
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.Header().Set("Cache-Control", "no-store, no-cache, must-revalidate, post-check=0, pre-check=0")
+	http.ServeFile(w, r, "./ui/static/404.html")
+}
+
+func show500(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusInternalServerError)
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.Header().Set("Cache-Control", "no-store, no-cache, must-revalidate, post-check=0, pre-check=0")
+	http.ServeFile(w, r, "./ui/static/500.html")
+}
+
+func printTemplateError(w http.ResponseWriter, err error) {
+	_, _ = fmt.Fprintf(w, `<small><span class='text-danger'>Error executing template: %s</span></small>`, err)
 }

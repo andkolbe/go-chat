@@ -10,7 +10,7 @@ func NoSurf(next http.Handler) http.Handler {
 	csrfHandler := nosurf.New(next)
 
 	// uses cookies to make sure the token it generates for us is on a per page basis
-	csrfHandler.SetBaseCookie(http.Cookie{
+	csrfHandler.SetBaseCookie(http.Cookie {
 		HttpOnly: true,
 		Path: "/", // "/" means apply this cookie to the entire site
 		Secure: app.InProduction,
