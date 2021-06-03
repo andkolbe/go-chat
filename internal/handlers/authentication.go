@@ -23,10 +23,11 @@ func (m *Repository) PostLogin(w http.ResponseWriter, r *http.Request) {
 	id, hash, err := Repo.DB.Authenticate(r.Form.Get("username"), r.Form.Get("password"))
 	if err == models.ErrInvalidCredentials {
 		app.Session.Put(r.Context(), "error", "Invalid login")
-		err := helpers.RenderPage(w, r, "login.html", nil, nil)
+		err := helpers.RenderPage(w, r, "login.jet", nil, nil)
 		if err != nil {
 			printTemplateError(w, err)
 		}
+		return
 	} else if err != nil {
 		log.Println(err)
 		ClientError(w, r, http.StatusBadRequest)

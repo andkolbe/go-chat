@@ -4,30 +4,47 @@
 {{end}}
 {{block body()}}
 <div class="row justify-content-center mt-5">
-    <div class="col-lg-7">
-        <form class='form-group border shadow bg-primary font-weight-bold p-4'>
+    <div class="col-lg-6">
+        <form class='form-group border rounded shadow bg-primary font-weight-bold p-4'>
             <h4 class='text-center text-light mb-4'>Register</h4>
             <small class='text-light'>* All fields are required</small>
-            <input class='form-control bg-light input-shadow ml-2 mb-4' placeholder='Username' type='text' />
-            <input class='form-control bg-light input-shadow ml-2 mb-4' placeholder='email@email.com' type='text' />
-            <div class='d-flex'>
-                <h2>
-                    <RiLockPasswordLine />
-                </h2>
-                <input class='form-control bg-light input-shadow ml-2 mb-3' placeholder='Password'
-                    onChange={handlePasswordMeter} type='text' />
+
+            <div class="mb-3 mt-1">
+                <div class="input-group">
+                    <input class="form-control required" id="username" required autocomplete="off" type='text'
+                        name='username' placeholder='username' value=''>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <div class="input-group">
+                    <input class="form-control required" id="first-name" required autocomplete="off" type='text'
+                        name='first-name' placeholder='first name' value=''>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <div class="input-group">
+                    <input class="form-control required" id="last-name" required autocomplete="off" type='text'
+                        name='last-name' placeholder='last name' value=''>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <div class="input-group">
+                    <input class="form-control required" id="email" required autocomplete="off" type='email'
+                        name='email' placeholder='email@email.com' value=''>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <div class="input-group">
+                    <input class="form-control required" id="password" required autocomplete="off" type='password'
+                        name='password' placeholder='password' value=''>
+                </div>
             </div>
             <small class='text-light'>* Password should be greater than 10 characters and have at least one
                 letter and number.</small>
-            <!-- <h6 class="text-light mt-5">Choose a Room To Join</h6>
-                    <select class="form-select" name="room" id="room">
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                        <option value="6">6</option>
-                    </select> -->
 
             <div class='d-flex flex-column'>
                 <button type='submit' class='btn btn-light btn-shadow align-items-end mt-5'>Register</button>

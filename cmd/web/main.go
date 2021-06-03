@@ -68,34 +68,5 @@ func main() {
 
 }
 
-// func getAllRows(conn *sql.DB) error {
-// 	rows, err := conn.Query("SELECT id, username, first_name, last_name, email FROM users ORDER BY id")
-// 	if err != nil {
-// 		log.Println(err)
-// 		return err
-// 	}
-// 	// must close connection to rows
-// 	defer rows.Close()
 
-// 	// pull something out of the rows variable and put it in GO
-// 	var username, firstName, lastName, email string
-// 	var id int
-
-// 	for rows.Next() { // Next ranges over all of the rows
-// 		err := rows.Scan(&id, &username, &firstName, &lastName, &email) // Scan the Query in the order they are written and store them in variables
-// 		if err != nil {
-// 			log.Println(err)
-// 			return err
-// 		}
-// 		fmt.Println("Record is", id, username, firstName, lastName, email)
-// 	}
-
-// 	if err = rows.Err(); err != nil {
-// 		log.Fatal("Error scanning rows", err)
-// 	}
-
-// 	fmt.Println("---------------------------------------------------")
-
-// 	return nil
-// }
 
