@@ -16,11 +16,11 @@ func routes() http.Handler {
 	mux.Use(NoSurf)
 	mux.Use(SessionLoad)
 
-	mux.Get("/", http.HandlerFunc(handlers.Repo.Login))
-	mux.Post("/", http.HandlerFunc(handlers.Repo.PostLogin))
-	mux.Get("/register", http.HandlerFunc(handlers.Repo.Register))
-	mux.Get("/chat", http.HandlerFunc(handlers.Repo.Chat))
-	mux.Get("/ws", http.HandlerFunc(handlers.WsEndPoint))
+	mux.Get("/", handlers.Repo.Login)
+	mux.Post("/", handlers.Repo.PostLogin)
+	mux.Get("/register", handlers.Repo.Register)
+	mux.Get("/chat", handlers.Repo.Chat)
+	mux.Get("/ws", handlers.WsEndPoint)
 
 	// if a user is disconnected, and then reconnects, they rejoin automatically
 	fileServer := http.FileServer(http.Dir("./static/"))
