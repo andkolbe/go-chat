@@ -28,10 +28,12 @@ var session *scs.SessionManager
 
 func main() {
 
-	err := run()
+	db, err := run()
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	defer db.SQL.Close() // db won't close until the main function stops running
 
 	mux := routes()
 
@@ -41,7 +43,7 @@ func main() {
 
 }
 
-func run() error {
+func run() (*driver.DB, error) {
 
 	// what I am going to put in the session 
 	gob.Register(models.User{})
@@ -67,8 +69,6 @@ func run() error {
 	}
 	log.Println("Connected to database!")
 
-	defer db.SQL.Close() // refactor this if I switch to the run function!
-
 	log.Println("Starting channel listener")
 	go handlers.ListenToWsChannel()
 
@@ -80,7 +80,7 @@ func run() error {
 	// // gives the render component of our app access to the app config variable
 	// helpers.NewHelpers(&app)
 
-	return nil
+	return db, nil
 }
 
 
