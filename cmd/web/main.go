@@ -1,7 +1,12 @@
 package main
 
 // A package is a way to group functions, and it's made up of all the files in the same directory
+// a package is a collection of common source code files
 // A main function executes by default when you run the main package
+
+// two types of packages. Executable and reusable
+// executable - generates a file that we can run. Only the main package
+// reusable - code used as 'helpers'. Good place to put reusable logic
 
 import (
 	"encoding/gob"
@@ -22,6 +27,21 @@ var app config.AppConfig
 var session *scs.SessionManager
 
 func main() {
+
+	err := run()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	mux := routes()
+
+	log.Println("Starting web server on port 8080")
+
+	_ = http.ListenAndServe(":8080", mux)
+
+}
+
+func run() error {
 
 	// what I am going to put in the session 
 	gob.Register(models.User{})
@@ -49,14 +69,8 @@ func main() {
 
 	defer db.SQL.Close() // refactor this if I switch to the run function!
 
-	mux := routes()
-
 	log.Println("Starting channel listener")
 	go handlers.ListenToWsChannel()
-
-	log.Println("Starting web server on port 8080")
-
-	_ = http.ListenAndServe(":8080", mux)
 
 	// our app config (where we can put whatever we want) and our db (a pointer to a db driver) are available to all of our handlers
 	// right now our db only holds postgres, but if we change or add more in the future, that can easily be refactored
@@ -66,6 +80,7 @@ func main() {
 	// // gives the render component of our app access to the app config variable
 	// helpers.NewHelpers(&app)
 
+	return nil
 }
 
 
